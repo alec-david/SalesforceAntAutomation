@@ -1,6 +1,4 @@
-I hosted a version of this tool here: https://alec-david.github.io/CombineAntPackages
-
-It is easy and inuitive to use and can be used to quickly generate a combined package.
+Use a live version of this tool here: https://alec-david.github.io/CombineAntPackages
 
 To use locally:
 

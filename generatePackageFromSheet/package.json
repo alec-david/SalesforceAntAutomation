@@ -1,0 +1,13 @@
+{
+  "name": "DeploymentAutomation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^20.1.0"
+  },
+  "scripts": {
+    "start": "node generatePackage.js"
+  }
+}
