@@ -1,4 +1,5 @@
 let metadataSet = generateMetadataSet();
+module.exports = metadataSet;
 
 //All Metadata types as defined here:
 //https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_types_list.htm
@@ -140,10 +141,13 @@ function generateMetadataSet() {
   set.add('SearchSettings');
   set.add('SecuritySettings');
   set.add('SharingBaseRule');
+  set.add('SharingCriteriaRule');
+  set.add('SharingOwnerRule');
   set.add('SharingReason');
   set.add('SharingRecalculation');
   set.add('SharingRules');
   set.add('SharingSet');
+  set.add('SharingTerritoryRule');
   set.add('SiteDotCom');
   set.add('Skill');
   set.add('SocialCustomerServiceSettings');
@@ -170,5 +174,12 @@ function generateMetadataSet() {
   set.add('Wavexmd');
   set.add('WebLink');
   set.add('Workflow');
+  set.add('WorkflowAlert');
+  set.add('WorkflowFieldUpdate');
+  set.add('WorkflowFlowAction');
+  set.add('WorkflowKnowledgePublish');
+  set.add('WorkflowOutboundMessage');
+  set.add('WorkflowRule');
+  set.add('WorkflowTask');
   return set;
 }

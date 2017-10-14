@@ -1,18 +1,18 @@
-const sheetId = '165exjnrm4-fevJDbsyTDa2pAnWuD6DvnwJpeglzupTM';
-const sheetTabName = 'Sprint 6';
+const sheetId = '1qFK10SNpdiIqAVqxudhBOC7MwZ0OXqigmBWlAne8OO8';
+const sheetTabName = 'Sheet1';
 
 const startColumn = 'A';
-const endColumn = 'Q';
-const startRow = '3';
+const endColumn = 'L';
+const startRow = '2';
 
 //Column numbers, A = 0, B = 1, etc
 const categoryColumn = 2;
 const objectNameColumn = 3;
 const apiNameColumn = 5;
 const typeColumn = 6;
-const statusColumn = 10;
-const manualStepColumn = 13;
-const stepNotesColumn = 14;
+const statusColumn = 8;
+const manualStepColumn = 10;
+const stepNotesColumn = 11;
 
 `
 https://docs.google.com/spreadsheets/d/165exjnrm4-fevJDbsyTDa2psUhBD6DvnwJpeglzupTM/edit#gid=0
@@ -43,8 +43,8 @@ const sheetId = '165exjnrm4-fevJDbsyTDa2psUhBD6DvnwJpeglzupTM';
 const sheetTabName = 'Sprint 3';
 
 const startColumn = 'A';
-const endColumn = 'E';
-const startRow = '3';
+const endColumn = 'H';
+const startRow = '2';
 
 const categoryColumn = 1;
 const objectNameColumn = 2;

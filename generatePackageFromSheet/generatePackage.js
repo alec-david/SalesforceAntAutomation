@@ -1,8 +1,11 @@
+const os = require('os');
 const fs = require('fs');
 const readline = require('readline');
 const google = require('googleapis');
 const googleAuth = require('google-auth-library');
+
 const info = require('./sheetInfo');
+const metadataTypes = require('./constants');
 
 if (!info) {
   return;
@@ -23,17 +26,164 @@ const {
   stepNotesColumn
 } = info;
 
+function getPackageData(auth) {
+  var sheets = google.sheets('v4');
+  sheets.spreadsheets.values.get(
+    {
+      auth: auth,
+      spreadsheetId: sheetId,
+      range: sheetTabName + '!' + startColumn + startRow + ':' + endColumn
+    },
+    (err, response) => {
+      if (err) {
+        console.log('The API returned an error: ' + err);
+        return;
+      }
+      generatePackageAndSteps(response.values);
+    }
+  );
+}
+
+function generatePackageAndSteps(rows) {
+  if (rows.length == 0) {
+    console.log('No data found.');
+  } else {
+    let packageInfo = mapDataToValues(rows);
+    let packageTypes = generatePackageXml(packageInfo.map);
+    writePackageXML(packageTypes);
+    writeDeploymentSteps(packageInfo.preSteps, packageInfo.postSteps);
+  }
+}
+
+function mapDataToValues(data) {
+  let map = new Map();
+  let packageInfo = {
+    map,
+    preSteps: 'Pre-Steps:' + os.EOL,
+    postSteps: 'Post-Steps:' + os.EOL
+  };
+
+  for (var i = 0; i < data.length; i++) {
+    let row = createRowObject(data[i]);
+
+    if (validEntry(row)) {
+      addRowToPackage(row, map);
+    }
+
+    if (row.manualStep === 'Pre-Step') {
+      packageInfo.preSteps += '\t- ' + row.stepNotes + os.EOL;
+    } else if (row.manualStep === 'Post-Step') {
+      packageInfo.postSteps += '\t- ' + row.stepNotes + os.EOL;
+    }
+  }
+  return packageInfo;
+}
+
+function createRowObject(row) {
+  let rowObj = {
+    category: row[categoryColumn],
+    objName: row[objectNameColumn],
+    apiName: row[apiNameColumn],
+    type: row[typeColumn],
+    status: row[statusColumn],
+    manualStep: row[manualStepColumn],
+    stepNotes: row[stepNotesColumn]
+  };
+  return rowObj;
+}
+
+function validEntry(row) {
+  return (
+    row.category !== 'Delete' &&
+    row.status === 'Completed' &&
+    row.type &&
+    row.apiName &&
+    metadataTypes.has(row.type)
+  );
+}
+
+function addRowToPackage(row, map) {
+  if (!map.get(row.type)) {
+    map.set(row.type, assignPrefix(row.type, row.objName) + row.apiName.trim());
+  } else {
+    map.set(
+      row.type,
+      map.get(row.type) +
+        ',' +
+        assignPrefix(row.type, row.objName) +
+        row.apiName.trim()
+    );
+  }
+}
+
+function generatePackageXml(map) {
+  let packageTypes =
+    '<?xml version="1.0" encoding="UTF-8"?>\n<Package xmlns="http://soap.sforce.com/2006/04/metadata">\n';
+  map.forEach((val, key) => {
+    packageTypes += '\t<types>\n';
+    val.split(',').forEach(member => {
+      packageTypes += '\t\t<members>' + member + '</members>\n';
+    });
+    packageTypes += '\t\t<name>' + key + '</name>\n';
+    packageTypes += '\t</types>\n';
+  });
+  packageTypes += '\t<version>40.0</version>\n</Package>';
+  return packageTypes;
+}
+
+function assignPrefix(key, obj) {
+  if (
+    key === 'CustomField' ||
+    key === 'ListView' ||
+    key === 'RecordType' ||
+    key === 'ValidationRule' ||
+    key === 'SharingCriteriaRule' ||
+    key === 'WebLink' ||
+    key.includes('Workflow')
+  ) {
+    return obj + '.';
+  }
+  if (key.includes('Layout')) {
+    return obj + '-';
+  }
+  return '';
+}
+
+function writePackageXML(package) {
+  fs.writeFile(__dirname + '/package.xml', package, err => {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+
+function writeDeploymentSteps(pre, post) {
+  let deploymentSteps = pre + os.EOL + os.EOL + post;
+  fs.writeFile(__dirname + '/deploymentSteps.txt', deploymentSteps, err => {
+    if (err) {
+      console.log(err);
+    }
+  });
+}
+
+/*
+Functions generated from Google's start guide:
+Should not need to modify these.
+
+You may need to update the client_secret.json if named something else
+Also may need to update the TOKEN_PATH if using mutliple google accounts to use this
+*/
+
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
 var SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 var TOKEN_DIR =
   (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) +
   '/.credentials/';
-var TOKEN_PATH =
-  TOKEN_DIR + 'sheets.googleapis.com-nodejs-generatepackage.json';
+var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
-fs.readFile('client_secret.json', (err, content) => {
+fs.readFile('client_secret_mine.json', (err, content) => {
   if (err) {
     console.log('Error loading client secret file: ' + err);
     return;
@@ -115,96 +265,4 @@ function storeToken(token) {
   }
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
   console.log('Token stored to ' + TOKEN_PATH);
-}
-
-/**
- * Get the Salesforce push log
- * VIEWSCLL: https://docs.google.com/spreadsheets/d/165exjnrm4-fevJDbsyTDa2pAnWuD6DvnwJpeglzupTM/edit
- * CaseMail: https://docs.google.com/spreadsheets/d/1SXUu-sPCZHF5PxUTgO5d2G--vjSN0phvWVvRXfZDBj4/edit
- */
-function getPackageData(auth) {
-  var sheets = google.sheets('v4');
-  sheets.spreadsheets.values.get(
-    {
-      auth: auth,
-      spreadsheetId: sheetId,
-      range: sheetTabName + '!' + startColumn + startRow + ':' + endColumn
-    },
-    (err, response) => {
-      if (err) {
-        console.log('The API returned an error: ' + err);
-        return;
-      }
-      var rows = response.values;
-      if (rows.length == 0) {
-        console.log('No data found.');
-      } else {
-        let map = mapDataToValues(rows);
-        let packageTypes = generatePackageXml(map);
-        fs.writeFile(__dirname + '/package.xml', packageTypes, err => {
-          if (err) {
-            console.log(err);
-          }
-        });
-      }
-    }
-  );
-}
-
-function mapDataToValues(data) {
-  let map = new Map();
-  for (var i = 0; i < data.length; i++) {
-    let row = data[i];
-
-    let category = row[categoryColumn];
-    let objName = row[objectNameColumn];
-    let apiName = row[apiNameColumn];
-    let type = row[typeColumn];
-    let status = row[statusColumn];
-
-    if (status === 'Completed' && category !== 'Deleted' && type && apiName) {
-      if (!map.get(type)) {
-        map.set(type, assignPrefix(type, objName) + apiName.trim());
-      } else {
-        map.set(
-          type,
-          map.get(type) + ',' + assignPrefix(type, objName) + apiName.trim()
-        );
-      }
-    }
-  }
-  return map;
-}
-
-function generatePackageXml(map) {
-  let packageTypes =
-    '<?xml version="1.0" encoding="UTF-8"?>\n<Package xmlns="http://soap.sforce.com/2006/04/metadata">\n';
-  map.forEach((val, key) => {
-    packageTypes += '\t<types>\n';
-    val.split(',').forEach(member => {
-      packageTypes += '\t\t<members>' + member + '</members>\n';
-    });
-    packageTypes += '\t\t<name>' + key + '</name>\n';
-    packageTypes += '\t</types>\n';
-  });
-  packageTypes += '\t<version>40.0</version>\n</Package>';
-  return packageTypes;
-}
-
-function assignPrefix(key, obj) {
-  if (
-    key === 'CustomField' ||
-    key === 'ListView' ||
-    key === 'RecordType' ||
-    key === 'ValidationRule' ||
-    key === 'SharingCriteriaRule' ||
-    key === 'WebLink' ||
-    key.includes('Workflow')
-  ) {
-    return obj + '.';
-  }
-  if (key.includes('Layout')) {
-    return obj + '-';
-  }
-  return '';
 }
