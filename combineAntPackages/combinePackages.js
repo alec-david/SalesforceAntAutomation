@@ -33,6 +33,9 @@ function readXML(fileName) {
 }
 
 function iterateOverXMLObjects(data) {
+  if (!data || !data.Package || !data.Package.types) {
+    return;
+  }
   let objArr = data.Package.types;
   objArr.forEach(type => {
     setMapValues(type);

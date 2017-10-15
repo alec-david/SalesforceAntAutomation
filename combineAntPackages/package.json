@@ -1,5 +1,5 @@
 {
-  "name": "CombinePackages",
+  "name": "combineAntPackages",
   "version": "1.0.0",
   "main": "index.js",
   "author": "alec-david",
@@ -8,6 +8,6 @@
     "xml2js": "^0.4.19"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node combinePackages.js"
   }
 }
