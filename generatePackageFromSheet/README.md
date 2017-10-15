@@ -1,12 +1,12 @@
 Instructions:
 
-1. Clone this directory.
-
-2. Ensure node.js is installed. To check, open a terminal and type <br>
+1. Ensure node.js is installed. To check, open a terminal and type <br>
 `node -v`<br>
 It should return 'vX.X.X'<br>
 Recommended version is v6 or greater.
 In not installed, install it here: [https://nodejs.org/en/](https://nodejs.org/en/)
+
+2. Clone the parent directory and navigate to this directory.
 
 3. Generate Google Sheets API Key by following step 1 in this guide:<br>
 [https://developers.google.com/sheets/api/quickstart/nodejs](https://developers.google.com/sheets/api/quickstart/nodejs)
@@ -22,8 +22,8 @@ Make sure you have all of the corresponding columns in the sheet.
 
 <br><br><br>
 TODO:
-+ Filter multiple versions of flow
-+ Move package.xml and deployment steps into own folder
++ ~~Filter multiple versions of flow~~
++ ~~Move package.xml and deployment steps into own folder~~
 + ~~Add check to not add manualstep to package~~
 + ~~Add Check to not add delete Category~~
 + ~~Maybe add a step to generate a list of pre/post deployment steps, stuff to delete~~

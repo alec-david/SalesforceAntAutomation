@@ -49,6 +49,7 @@ function generatePackageAndSteps(rows) {
     console.log('No data found.');
   } else {
     let packageInfo = mapDataToValues(rows);
+    filterOldFlowVersions(packageInfo.map);
     let packageTypes = generatePackageXml(packageInfo.map);
     writePackageXML(packageTypes);
     writeDeploymentSteps(packageInfo.preSteps, packageInfo.postSteps);
@@ -149,8 +150,45 @@ function assignPrefix(key, obj) {
   return '';
 }
 
+function filterOldFlowVersions(map) {
+  let flows = map.get('Flow');
+  if (flows.length < 2) {
+    return;
+  }
+  let flowArr = flows.split(',');
+  let flowMap = generateFilteredFlowMap(flowArr);
+  let updatedFlows = generateFilteredFlowString(flowMap);
+  map.set('Flow', updatedFlows);
+  return map;
+}
+
+function generateFilteredFlowMap(flows) {
+  let flowMap = new Map();
+  flows.forEach(flow => {
+    let currentFlow = flow.substr(0, flow.indexOf('-'));
+    let versionNumber = parseInt(flow.substr(flow.indexOf('-') + 1));
+    if (!flowMap.has(currentFlow) || flowMap.get(currentFlow) < versionNumber) {
+      flowMap.set(currentFlow, versionNumber);
+    }
+  });
+  return flowMap;
+}
+
+function generateFilteredFlowString(flowMap) {
+  let updatedFlows = '';
+  for (var [key, value] of flowMap) {
+    updatedFlows += key + '-' + value + ',';
+  }
+  updatedFlows = updatedFlows.slice(0, -1);
+  return updatedFlows;
+}
+
 function writePackageXML(package) {
-  fs.writeFile(__dirname + '/package.xml', package, err => {
+  let dir = './generatedPackage';
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+  }
+  fs.writeFile(__dirname + '/generatedPackage/package.xml', package, err => {
     if (err) {
       console.log(err);
     }
@@ -158,12 +196,25 @@ function writePackageXML(package) {
 }
 
 function writeDeploymentSteps(pre, post) {
-  let deploymentSteps = pre + os.EOL + os.EOL + post;
-  fs.writeFile(__dirname + '/deploymentSteps.txt', deploymentSteps, err => {
-    if (err) {
-      console.log(err);
+  let deploymentSteps;
+  if (pre.length < 15 && post.length < 16) {
+    return;
+  } else if (pre.length >= 15 && post.length < 16) {
+    deploymentSteps = pre;
+  } else if (post.length >= 16 && pre.length < 15) {
+    deploymentSteps = post;
+  } else {
+    deploymentSteps = pre + os.EOL + os.EOL + post;
+  }
+  fs.writeFile(
+    __dirname + '/generatedPackage/deploymentSteps.txt',
+    deploymentSteps,
+    err => {
+      if (err) {
+        console.log(err);
+      }
     }
-  });
+  );
 }
 
 /*

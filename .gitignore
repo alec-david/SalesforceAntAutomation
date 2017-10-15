@@ -3,3 +3,4 @@ client_secret_mine.json
 *.xml
 *.txt
 node_modules/
+generatedPackage/
