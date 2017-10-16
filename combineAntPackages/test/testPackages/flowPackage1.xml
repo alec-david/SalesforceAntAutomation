@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>ExampleFlow1-3</members>
+        <members>ExampleFlow2-13</members>
+        <members>ExampleFlow1-8</members>
+        <members>ExampleFlow1-1</members>
+        <members>ExampleFlow2-3</members>
+        <members>ExampleFlow3-42</members>
+        <name>Flow</name>
+    </types>
+    <version>40.0</version>
+</Package>

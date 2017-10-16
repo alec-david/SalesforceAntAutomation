@@ -3,13 +3,15 @@ let xml2js = require('xml2js');
 
 let packagesDirectory = __dirname + '/packages';
 
-let map = new Map();
-iterateOverPackages();
+let map;
 
 function iterateOverPackages() {
+  map = new Map();
   let files = fs.readdirSync(packagesDirectory);
   files.forEach(file => {
-    readXML(packagesDirectory + '/' + file);
+    if (file.indexOf('.xml') !== -1) {
+      readXML(packagesDirectory + '/' + file);
+    }
   });
   filterOldFlowVersions();
   let packageXML = generatePackageXml();
@@ -65,7 +67,7 @@ function addMemberToExistingType(name, members) {
 
 function filterOldFlowVersions() {
   let flows = map.get('Flow');
-  if (flows.length < 2) {
+  if (!flows || flows.length < 2) {
     return;
   }
 
@@ -108,3 +110,20 @@ function generatePackageXml() {
   packageXML += '\t<version>40.0</version>\n</Package>';
   return packageXML;
 }
+
+//mock function to unit test functionality.
+function iterateOverPackagesTest(packagesToTest) {
+  map = new Map();
+  let testPackagesDirectory = __dirname + '/test/testPackages';
+  let files = fs.readdirSync(testPackagesDirectory);
+  files.forEach(file => {
+    if (file.indexOf('.xml') !== -1 && packagesToTest.includes(file)) {
+      readXML(testPackagesDirectory + '/' + file);
+    }
+  });
+  filterOldFlowVersions();
+  let packageXML = generatePackageXml();
+  return packageXML;
+}
+
+module.exports = { iterateOverPackages, iterateOverPackagesTest };

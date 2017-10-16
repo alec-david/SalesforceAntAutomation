@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Example_Apex_Class1</members>
+        <members>Example_Apex_ClassTest1</members>
+        <members>Example_Apex_Class2</members>
+        <members>Example_Apex_ClassTest2</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>Example_VF_Component1</members>
+        <members>Example_VF_Component2</members>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>Example_VF_Page1</members>
+        <members>Example_VF_Page2</members>
+        <name>ApexPage</name>
+    </types>
+    <version>40.0</version>
+</Package>
