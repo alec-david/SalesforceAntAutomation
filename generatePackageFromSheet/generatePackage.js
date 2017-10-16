@@ -152,7 +152,7 @@ function assignPrefix(key, obj) {
 
 function filterOldFlowVersions(map) {
   let flows = map.get('Flow');
-  if (flows.length < 2) {
+  if (!flows || flows.length < 2) {
     return;
   }
   let flowArr = flows.split(',');
@@ -234,15 +234,17 @@ var TOKEN_DIR =
 var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
-fs.readFile('client_secret_mine.json', (err, content) => {
-  if (err) {
-    console.log('Error loading client secret file: ' + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Google Sheets API.
-  authorize(JSON.parse(content), getPackageData);
-});
+function loadClientSecrets() {
+  fs.readFile('client_secret_mine.json', (err, content) => {
+    if (err) {
+      console.log('Error loading client secret file: ' + err);
+      return;
+    }
+    // Authorize a client with the loaded credentials, then call the
+    // Google Sheets API.
+    authorize(JSON.parse(content), getPackageData);
+  });
+}
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -317,3 +319,18 @@ function storeToken(token) {
   fs.writeFile(TOKEN_PATH, JSON.stringify(token));
   console.log('Token stored to ' + TOKEN_PATH);
 }
+
+/*Mock methods to test*/
+
+function generatePackageAndStepsTest(rows) {
+  if (rows.length == 0) {
+    console.log('No data found.');
+  } else {
+    let packageInfo = mapDataToValues(rows);
+    filterOldFlowVersions(packageInfo.map);
+    let packageTypes = generatePackageXml(packageInfo.map);
+    return [packageTypes, packageInfo.preSteps + packageInfo.postSteps];
+  }
+}
+
+module.exports = { loadClientSecrets, generatePackageAndStepsTest };
