@@ -17,6 +17,11 @@ describe('Given one package', () => {
     let combinedPackage = combineTest(packagesToTest);
     assert.equal(mockCombinedPackages.noInfoPackage, combinedPackage);
   });
+  it('Malformed package. Should return package structure with no info', () => {
+    let packagesToTest = ['malformedPackage1.xml'];
+    let combinedPackage = combineTest(packagesToTest);
+    assert.equal(mockCombinedPackages.noInfoPackage, combinedPackage);
+  });
   it('Typical package. Should return identical package', () => {
     let packagesToTest = ['package1.xml'];
     let combinedPackage = combineTest(packagesToTest);
@@ -37,6 +42,11 @@ describe('Given two packages', () => {
   });
   it('Two packages with no info. Should return package structure with no info', () => {
     let packagesToTest = ['packageWithNoInfo1.xml', 'packageWithNoInfo2.xml'];
+    let combinedPackage = combineTest(packagesToTest);
+    assert.equal(mockCombinedPackages.noInfoPackage, combinedPackage);
+  });
+  it('Two malformed packages. Should return package structure with no info', () => {
+    let packagesToTest = ['malformedPackage1.xml', 'malformedPackage2.xml'];
     let combinedPackage = combineTest(packagesToTest);
     assert.equal(mockCombinedPackages.noInfoPackage, combinedPackage);
   });
@@ -95,7 +105,9 @@ describe('> 2 file combines', () => {
       'blankPackage1.xml',
       'blankPackage2.xml',
       'packageWithNoInfo1.xml',
-      'packageWithNoInfo2.xml'
+      'packageWithNoInfo2.xml',
+      'malformedPackage1.xml',
+      'malformedPackage2.xml'
     ];
     let combinedPackage = combineTest(packagesToTest);
     assert.equal(mockCombinedPackages.masterCombinedPackage, combinedPackage);

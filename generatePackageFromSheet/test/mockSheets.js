@@ -1,3 +1,23 @@
+/*
+Format for data pulled from sheets:
+array of arrays. Each array represents a row
+[
+  [
+    UserStory,
+    Sprint,
+    Category (New, Update, Delete),
+    Object,
+    Component/Field Name (Label),
+    API Name,
+    Type,
+    Status (Completed, In Progress, Deployed), (only Completed is pulled)
+    Owner,
+    Manual Step? (Pre-Step, Post-Step),
+    Manual Step Notes
+  ]
+]
+*/
+
 const mockBlankSheet = [[]];
 
 const mockSheetOneNew = [
@@ -9,7 +29,6 @@ const mockSheetOneNew = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObject',
-    '',
     'Completed',
     'Alec',
     '',
@@ -26,7 +45,6 @@ const mockSheetOneUpdate = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObject',
-    '',
     'Completed',
     'Alec',
     '',
@@ -43,7 +61,6 @@ const mockSheetOneDelete = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObject',
-    '',
     'Completed',
     'Alec',
     '',
@@ -60,7 +77,6 @@ const mockSheetOneNewWithPreStep = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObject',
-    '',
     'Completed',
     'Alec',
     'Pre-Step',
@@ -77,7 +93,6 @@ const mockSheetOneNewWithPostStep = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObject',
-    '',
     'Completed',
     'Alec',
     'Post-Step',
@@ -94,7 +109,6 @@ const mockSheetOneNewInvalidType = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObjectzz',
-    '',
     'Completed',
     'Alec',
     '',
@@ -111,11 +125,810 @@ const mockSheetOneNewInvalidTypeWithPreStep = [
     'ExampleObject1',
     'ExampleObject1__c',
     'CustomObjectzz',
-    '',
     'Completed',
     'Alec',
     'Pre-Step',
     'Should not see this'
+  ]
+];
+
+const mockSheetMultipleNewUpdate = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ]
+];
+
+const mockSheetMultipleDelete = [
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ]
+];
+
+const mockSheetMultipleNewUpdateDelete = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject3',
+    'ExampleObject3',
+    'ExampleObject3__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject4',
+    'ExampleObject4',
+    'ExampleObject4__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-3',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ]
+];
+
+const mockSheetMultipleFlow = [
+  [
+    'A-2',
+    '1',
+    'New',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-5',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-3',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow2',
+    'ExampleFlow2-8',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow2',
+    'ExampleFlow2-8',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow3',
+    'ExampleFlow3-12',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ]
+];
+
+const mockSheetMultiplePreSteps = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 1'
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 2'
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 3'
+  ]
+];
+
+const mockSheetMultiplePostSteps = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 1'
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 2'
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 3'
+  ]
+];
+
+const mockSheetMultiplePreAndPostSteps = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 1'
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 2'
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 1'
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-3',
+    'Flow',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 2'
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 3'
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject2__c',
+    'Example Field',
+    'ExampleField2__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 3'
+  ]
+];
+
+const mockSheetMultipleInvalidTypes = [
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomAbject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObj',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flowz',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ]
+];
+
+const mockSheetMultipleInvalidTypesWithDeploymentSteps = [
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomAbject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Should not see this'
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObj',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Or this'
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flowz',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Nor this'
+  ]
+];
+
+const mockSheetMultipleNewUpdateDeleteValidAndInvalid = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject3',
+    'ExampleObject3',
+    'ExampleObject3__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject4',
+    'ExampleObject4',
+    'ExampleObject4__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-3',
+    'Flow',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomAbject',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObj',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flowz',
+    'Completed',
+    'Alec',
+    '',
+    ''
+  ]
+];
+
+const mockSheetMultiplePreAndPostStepsValidAndInvalid = [
+  [
+    'A-1',
+    '1',
+    'New',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 1'
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 2'
+  ],
+  [
+    'A-2',
+    '1',
+    'New',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flow',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 1'
+  ],
+  [
+    'A-2',
+    '1',
+    'Update',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-3',
+    'Flow',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 2'
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject1__c',
+    'Example Field',
+    'ExampleField1__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Test Pre Step 3'
+  ],
+  [
+    'A-3',
+    '1',
+    'Update',
+    'ExampleObject2__c',
+    'Example Field',
+    'ExampleField2__c',
+    'CustomField',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Test Post Step 3'
+  ],
+  [
+    'A-1',
+    '1',
+    'Delete',
+    'ExampleObject1',
+    'ExampleObject1',
+    'ExampleObject1__c',
+    'CustomAbject',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Should not see this'
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    'ExampleObject2',
+    'ExampleObject2',
+    'ExampleObject2__c',
+    'CustomObj',
+    'Completed',
+    'Alec',
+    'Post-Step',
+    'Or this'
+  ],
+  [
+    'A-2',
+    '1',
+    'Delete',
+    '',
+    'ExampleFlow1',
+    'ExampleFlow1-1',
+    'Flowz',
+    'Completed',
+    'Alec',
+    'Pre-Step',
+    'Nor this'
   ]
 ];
 
@@ -127,5 +940,16 @@ module.exports = {
   mockSheetOneNewWithPreStep,
   mockSheetOneNewWithPostStep,
   mockSheetOneNewInvalidType,
-  mockSheetOneNewInvalidTypeWithPreStep
+  mockSheetOneNewInvalidTypeWithPreStep,
+  mockSheetMultipleNewUpdate,
+  mockSheetMultipleDelete,
+  mockSheetMultipleNewUpdateDelete,
+  mockSheetMultipleFlow,
+  mockSheetMultiplePreSteps,
+  mockSheetMultiplePostSteps,
+  mockSheetMultiplePreAndPostSteps,
+  mockSheetMultipleInvalidTypes,
+  mockSheetMultipleInvalidTypesWithDeploymentSteps,
+  mockSheetMultipleNewUpdateDeleteValidAndInvalid,
+  mockSheetMultiplePreAndPostStepsValidAndInvalid
 };

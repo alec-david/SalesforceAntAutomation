@@ -2,7 +2,7 @@ const sheetId = '1qFK10SNpdiIqAVqxudhBOC7MwZ0OXqigmBWlAne8OO8';
 const sheetTabName = 'Sheet1';
 
 const startColumn = 'A';
-const endColumn = 'L';
+const endColumn = 'K';
 const startRow = '2';
 
 //Column numbers, A = 0, B = 1, etc
@@ -10,9 +10,9 @@ const categoryColumn = 2;
 const objectNameColumn = 3;
 const apiNameColumn = 5;
 const typeColumn = 6;
-const statusColumn = 8;
-const manualStepColumn = 10;
-const stepNotesColumn = 11;
+const statusColumn = 7;
+const manualStepColumn = 9;
+const stepNotesColumn = 10;
 
 `
 https://docs.google.com/spreadsheets/d/165exjnrm4-fevJDbsyTDa2psUhBD6DvnwJpeglzupTM/edit#gid=0
@@ -61,6 +61,7 @@ const sheetInfo = {
   startColumn,
   endColumn,
   startRow,
+  categoryColumn,
   objectNameColumn,
   apiNameColumn,
   typeColumn,

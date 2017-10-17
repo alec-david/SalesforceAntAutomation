@@ -69,12 +69,11 @@ function mapDataToValues(data) {
 
     if (validEntry(row)) {
       addRowToPackage(row, map);
-    }
-
-    if (row.manualStep === 'Pre-Step') {
-      packageInfo.preSteps += '\t- ' + row.stepNotes + os.EOL;
-    } else if (row.manualStep === 'Post-Step') {
-      packageInfo.postSteps += '\t- ' + row.stepNotes + os.EOL;
+      if (row.manualStep === 'Pre-Step') {
+        packageInfo.preSteps += '\t- ' + row.stepNotes + os.EOL;
+      } else if (row.manualStep === 'Post-Step') {
+        packageInfo.postSteps += '\t- ' + row.stepNotes + os.EOL;
+      }
     }
   }
   return packageInfo;
