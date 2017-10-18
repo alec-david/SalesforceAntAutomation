@@ -1,5 +1,5 @@
 {
-  "name": "DeploymentAutomation",
+  "name": "generate-package-from-sheet",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",

@@ -86,9 +86,12 @@ function invalidConstants() {
     !startColumn ||
     !endColumn ||
     !startRow ||
-    objectNameColumn === -1 ||
-    apiNameColumn === -1 ||
-    typeColumn === -1 ||
-    statusColumn === -1
+    categoryColumn < 0 ||
+    objectNameColumn < 0 ||
+    apiNameColumn < 0 ||
+    typeColumn < 0 ||
+    statusColumn < 0 ||
+    manualStepColumn < 0 ||
+    stepNotesColumn < 0
   );
 }

@@ -191,6 +191,7 @@ function writePackageXML(package) {
     if (err) {
       console.log(err);
     }
+    console.log('Generated package saved to ./generatedPackage/package.xml');
   });
 }
 
@@ -212,6 +213,9 @@ function writeDeploymentSteps(pre, post) {
       if (err) {
         console.log(err);
       }
+      console.log(
+        'Deployment steps saved to ./generatedPackage/deploymentSteps.txt'
+      );
     }
   );
 }
@@ -234,7 +238,7 @@ var TOKEN_PATH = TOKEN_DIR + 'sheets.googleapis.com-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
 function loadClientSecrets() {
-  fs.readFile('client_secret_mine.json', (err, content) => {
+  fs.readFile('client_secret.json', (err, content) => {
     if (err) {
       console.log('Error loading client secret file: ' + err);
       return;
