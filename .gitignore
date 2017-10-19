@@ -4,3 +4,5 @@ client_secret_mine.json
 node_modules/
 generatedPackage/
 combinedPackage.xml
+sheets.googleapis.com-nodejs-generatepackage.json
+sheets.googleapis.com-nodejs-quickstart.json

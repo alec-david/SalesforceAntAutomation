@@ -13,3 +13,5 @@ Make sure you have all of the corresponding columns in the sheet.
 5. Navigate to this directory and run `npm install` (or `yarn install`)
 
 6. Run `npm start` (or `yarn start`)
+
+7. If running for the first time, you will be asked to navigate to a url authorize the app. Simply navigate to the provided url, sign into your google account (that you used in step 2) and paste the code into the terminal.

@@ -1,18 +1,18 @@
-const sheetId = '1qFK10SNpdiIqAVqxudhBOC7MwZ0OXqigmBWlAne8OO8';
-const sheetTabName = 'Sheet1';
+const sheetId = '';
+const sheetTabName = '';
 
-const startColumn = 'A';
-const endColumn = 'K';
-const startRow = '2';
+const startColumn = '';
+const endColumn = '';
+const startRow = '';
 
 //Column numbers, A = 0, B = 1, etc
-const categoryColumn = 2;
-const objectNameColumn = 3;
-const apiNameColumn = 5;
-const typeColumn = 6;
-const statusColumn = 7;
-const manualStepColumn = 9;
-const stepNotesColumn = 10;
+const categoryColumn = -1;
+const objectNameColumn = -1;
+const apiNameColumn = -1;
+const typeColumn = -1;
+const statusColumn = -1;
+const manualStepColumn = -1;
+const stepNotesColumn = -1;
 
 `
 https://docs.google.com/spreadsheets/d/165exjnrm4-fevJDbsyTDa2psUhBD6DvnwJpeglzupTM/edit#gid=0
